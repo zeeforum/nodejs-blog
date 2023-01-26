@@ -1,5 +1,6 @@
 const express = require('express')
-const Setting = require('../models/setting')
+const Setting = require('../models/setting');
+const { parseErrorMessage } = require('../utils/helper');
 
 const router = new express.Router();
 
@@ -12,9 +13,7 @@ router.get('/settings', async (req, res) => {
 			settings
 		})
 	} catch (err) {
-		return res.status(500).json({
-			error: "Server error!",
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -33,9 +32,7 @@ router.post('/settings', async (req, res) => {
 			message: 'Setting saved successfully!'
 		})
 	} catch (err) {
-		return res.status(500).json({
-			error: `Server error: ${err.message}`
-		})
+		return parseErrorMessage(err)
 	}
 })
 

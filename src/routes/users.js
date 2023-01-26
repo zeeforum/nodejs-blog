@@ -2,18 +2,19 @@ const express = require('express')
 const validator = require('validator')
 const User = require('../models/user')
 const authMiddleware = require('../middleware/auth')
-const { getValidationMessages } = require('../utils/helper')
+const { parseErrorMessage } = require('../utils/helper')
 const { uploadAvatar } = require('../utils/upload')
 
 const router = new express.Router();
 
 router.post('/users', async (req, res) => {
-	const user = new User()
 	try {
-		user.name = "Example"
-		user.username = "example"
-		user.email = "email@example.com"
-		user.password = "testpp123"
+		const user = new User()
+
+		user.name = req.body.name
+		user.username = req.body.username
+		user.email = req.body.email
+		user.password = req.body.password
 
 		await user.save()
 		let token = await user.generateAuthToken()
@@ -22,11 +23,7 @@ router.post('/users', async (req, res) => {
 			token
 		})
 	} catch (err) {
-		if (err.errors) {
-			return res.status(422).json({ error: getValidationMessages(err) })
-		}
-
-		return res.status(500).json({ error: err.message })
+		return parseErrorMessage(err)
 	}
 })
 
@@ -56,9 +53,7 @@ router.post('/users/login', async (req, res) => {
 			token
 		})
 	} catch (err) {
-		return res.status(401).json({
-			error: err.message
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -86,9 +81,7 @@ router.post('/users/avatar', authMiddleware, async (req, res) => {
 			message: "Profile picture uploaded successfully!"
 		})
 	} catch (err) {
-		return res.status(500).json({
-			error: err.message
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -111,9 +104,7 @@ router.post('/users/:id/permissions', authMiddleware, async (req, res) => {
 			user
 		})
 	} catch (err) {
-		return res.status(500).json({
-			'error': "Server error!"
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -137,9 +128,7 @@ router.patch('/users/:id/permissions', authMiddleware, async (req, res) => {
 			user
 		})
 	} catch (err) {
-		return res.status(500).json({
-			'error': "Server error!"
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -153,9 +142,7 @@ router.post('/users/logout', authMiddleware, async (req, res) => {
 			message: 'User logged out.'
 		})
 	} catch (err) {
-		return res.status(500).json({
-			error: err.message
-		})
+		return parseErrorMessage(err)
 	}
 })
 

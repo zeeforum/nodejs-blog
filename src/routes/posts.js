@@ -1,5 +1,4 @@
 const express = require('express')
-const multer = require('multer')
 
 const Post = require('../models/post')
 const { parseErrorMessage } = require('../utils/helper')
@@ -16,9 +15,7 @@ router.get('/posts', async (req, res) => {
 			posts
 		})
 	} catch (err) {
-		return res.status(500).json({
-			error: "Server error!"
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -80,9 +77,7 @@ router.patch('/posts/:id', uploadPostImage, async (req, res) => {
 
 		return res.status(204).send()
 	} catch (err) {
-		return res.status(500).json({
-			error: "Server error!"
-		})
+		return parseErrorMessage(err)
 	}
 })
 

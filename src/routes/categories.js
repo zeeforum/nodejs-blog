@@ -1,6 +1,6 @@
 const express = require('express')
 const Category = require('../models/category')
-const { getValidationMessages } = require('../utils/helper')
+const { parseErrorMessage } = require('../utils/helper')
 
 const router = express.Router()
 
@@ -13,9 +13,7 @@ router.get('/categories', async (req, res) => {
 			categories
 		})
 	} catch (err) {
-		return res.status(500).json({
-			error: "Server error!"
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -38,15 +36,7 @@ router.post('/categories', async (req, res) => {
 			category
 		})
 	} catch (err) {
-		if (err.errors) {
-			return res.status(422).json({
-				error: getValidationMessages(err)
-			})
-		}
-
-		return res.status(500).json({
-			error: err.message
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -61,9 +51,7 @@ router.get('/categories/:id', async (req, res) => {
 
 		return res.json(category)
 	} catch (err) {
-		return res.status(404).json({
-			error: 'No category found!'
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -99,15 +87,7 @@ router.patch('/categories/:id', async (req, res) => {
 
 		return res.status(204).send()
 	} catch (err) {
-		if (err.errors) {
-			return res.status(422).json({
-				error: getValidationMessages(err)
-			})
-		}
-
-		return res.status(500).json({
-			error: err.message
-		})
+		return parseErrorMessage(err)
 	}
 })
 
@@ -126,9 +106,7 @@ router.delete('/categories/:id', async (req, res) => {
 			category
 		})
 	} catch (err) {
-		return res.status(500).json({
-			error: 'Service error!'
-		})
+		return parseErrorMessage(err)
 	}
 })
 
