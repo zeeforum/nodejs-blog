@@ -4,19 +4,22 @@ const { makeErrorCookies } = require('../../utils/helper')
 
 const router = new express.Router()
 
-router.get('/login', (req, res) => {
-	console.log(req.cookies.errors)
-	return res.render('login')
-})
+router.all('/login', async (req, res) => {
+	let error = null
+	if (req.method === 'POST') {
+		try {
+			await axios.post(process.env.BASE_URL + '/api/users/login', req.body)
 
-router.post('/login', async (req, res) => {
-	try {
-		const response = await axios.post(process.env.BASE_URL + '/api/users/login', req.body)
-		
-		return res.json(response)
-	} catch (err) {
-		return makeErrorCookies(res, err, '/admin/login')
+			// Todo: Get & Save token in cookie
+		} catch (err) {
+			error = err.response.data
+		}
 	}
+
+	return res.render('login', {
+		title: "Login",
+		error
+	})
 })
 
 module.exports = router

@@ -26,7 +26,6 @@ const parseErrorMessage = (res, err) => {
 
 const makeErrorCookies = (res, err, redirectUrl) => {
 	if (err && err.response && err.response.status === 422) {
-		console.log(err.response.data)
 		return res.cookie('errors', err.response.data).redirect(redirectUrl)
 	}
 
