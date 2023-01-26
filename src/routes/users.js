@@ -23,13 +23,14 @@ router.post('/users', async (req, res) => {
 			token
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
 router.post('/users/login', async (req, res) => {
 	try {
 		let errors = {}
+
 		if (validator.isEmpty(req.body.email)) {
 			errors['email'] = "Email is required."
 		} else if (!validator.isEmail(req.body.email)) {
@@ -53,7 +54,7 @@ router.post('/users/login', async (req, res) => {
 			token
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -81,7 +82,7 @@ router.post('/users/avatar', authMiddleware, async (req, res) => {
 			message: "Profile picture uploaded successfully!"
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -104,7 +105,7 @@ router.post('/users/:id/permissions', authMiddleware, async (req, res) => {
 			user
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -128,7 +129,7 @@ router.patch('/users/:id/permissions', authMiddleware, async (req, res) => {
 			user
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -142,7 +143,7 @@ router.post('/users/logout', authMiddleware, async (req, res) => {
 			message: 'User logged out.'
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 

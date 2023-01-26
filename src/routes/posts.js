@@ -15,7 +15,7 @@ router.get('/posts', async (req, res) => {
 			posts
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -77,7 +77,7 @@ router.patch('/posts/:id', uploadPostImage, async (req, res) => {
 
 		return res.status(204).send()
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -91,7 +91,7 @@ router.delete('/posts/:id', async (req, res) => {
 			post
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 

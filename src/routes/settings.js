@@ -13,7 +13,7 @@ router.get('/settings', async (req, res) => {
 			settings
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -32,7 +32,7 @@ router.post('/settings', async (req, res) => {
 			message: 'Setting saved successfully!'
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 

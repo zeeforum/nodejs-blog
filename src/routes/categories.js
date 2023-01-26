@@ -13,7 +13,7 @@ router.get('/categories', async (req, res) => {
 			categories
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -36,7 +36,7 @@ router.post('/categories', async (req, res) => {
 			category
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -51,7 +51,7 @@ router.get('/categories/:id', async (req, res) => {
 
 		return res.json(category)
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -87,7 +87,7 @@ router.patch('/categories/:id', async (req, res) => {
 
 		return res.status(204).send()
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
@@ -106,7 +106,7 @@ router.delete('/categories/:id', async (req, res) => {
 			category
 		})
 	} catch (err) {
-		return parseErrorMessage(err)
+		return parseErrorMessage(res, err)
 	}
 })
 
