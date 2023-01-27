@@ -1,9 +1,9 @@
 const express = require('express')
-const validator = require('validator')
 const User = require('../models/user')
-const authMiddleware = require('../middleware/auth')
+const apiAuthMiddleware = require('../middleware/api-auth')
 const { parseErrorMessage } = require('../utils/helper')
 const { uploadAvatar } = require('../utils/upload')
+const loginValidation = require('../middleware/admin/login-validation')
 
 const router = new express.Router();
 
@@ -27,26 +27,8 @@ router.post('/users', async (req, res) => {
 	}
 })
 
-router.post('/users/login', async (req, res) => {
+router.post('/users/login', loginValidation, async (req, res) => {
 	try {
-		let errors = {}
-
-		if (validator.isEmpty(req.body.email)) {
-			errors['email'] = "Email is required."
-		} else if (!validator.isEmail(req.body.email)) {
-			errors['email'] = "Please enter a valid email address."
-		}
-
-		if (validator.isEmpty(req.body.password)) {
-			errors['password'] = "Password is required."
-		}
-
-		if (Object.keys(errors).length > 0) {
-			return res.status(422).json({
-				error: errors
-			})
-		}
-
 		const user = await User.findByCredentials(req.body.email, req.body.password)
 		const token = await user.generateAuthToken()
 		return res.json({
@@ -58,13 +40,13 @@ router.post('/users/login', async (req, res) => {
 	}
 })
 
-router.get('/users/me', authMiddleware, (req, res) => {
+router.get('/users/me', apiAuthMiddleware, (req, res) => {
 	return res.json({
 		user: req.user
 	})
 })
 
-router.post('/users/avatar', authMiddleware, async (req, res) => {
+router.post('/users/avatar', apiAuthMiddleware, async (req, res) => {
 	try {
 		await uploadAvatar(req, res, async (err) => {
 			if (err) {
@@ -86,7 +68,7 @@ router.post('/users/avatar', authMiddleware, async (req, res) => {
 	}
 })
 
-router.post('/users/:id/permissions', authMiddleware, async (req, res) => {
+router.post('/users/:id/permissions', apiAuthMiddleware, async (req, res) => {
 	try {
 		let user = await User.findById(req.params.id)
 		if (!user) {
@@ -109,7 +91,7 @@ router.post('/users/:id/permissions', authMiddleware, async (req, res) => {
 	}
 })
 
-router.patch('/users/:id/permissions', authMiddleware, async (req, res) => {
+router.patch('/users/:id/permissions', apiAuthMiddleware, async (req, res) => {
 	try {
 		let user = await User.findById(req.params.id)
 		if (!user) {
@@ -133,7 +115,7 @@ router.patch('/users/:id/permissions', authMiddleware, async (req, res) => {
 	}
 })
 
-router.post('/users/logout', authMiddleware, async (req, res) => {
+router.post('/users/logout', apiAuthMiddleware, async (req, res) => {
 	try {
 		req.user.tokens = req.user.tokens.filter(token => req.token !== token.token)
 		await req.user.save()
