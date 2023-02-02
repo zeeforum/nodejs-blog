@@ -1,5 +1,4 @@
 const express = require('express')
-
 const Post = require('../models/post')
 const { parseErrorMessage } = require('../utils/helper')
 const { uploadPostImage } = require('../utils/upload')

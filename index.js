@@ -1,19 +1,18 @@
 const app = require('./src/app')
 
 // API Router
-const apiAuthMiddleware = require('./src/middleware/api-auth')
 const userRouter = require('./src/routes/users')
 const categoriesRouter = require('./src/routes/categories')
 const postsRouter = require('./src/routes/posts')
 const settingsRouter = require('./src/routes/settings')
 
 // ADMIN ROUTER
-const authMiddleware = require('./src/middleware/admin/auth')
-const loginRouter = require('./src/routes/admin/login')
+const authRouter = require('./src/routes/admin/auth')
 const dashboardRouter = require('./src/routes/admin/dashboard')
+const { authMiddleware } = require('./src/middleware/admin/auth')
+const apiAuthMiddleware = require('./src/middleware/api-auth')
 
 require('./src/db/mongoose')
-
 
 
 // API routes
@@ -26,7 +25,7 @@ app.use('/api', apiAuthMiddleware, settingsRouter)
 const adminUrl = process.env.ADMIN_URL || '/admin'
 
 // Admin routes
-app.use(adminUrl, loginRouter)
+app.use(adminUrl, authRouter)
 app.use(adminUrl, authMiddleware, dashboardRouter)
 
 const PORT = process.env.PORT || 3000

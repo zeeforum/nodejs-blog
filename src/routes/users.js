@@ -1,9 +1,11 @@
 const express = require('express')
+const crypto = require('crypto')
 const User = require('../models/user')
 const apiAuthMiddleware = require('../middleware/api-auth')
 const { parseErrorMessage } = require('../utils/helper')
 const { uploadAvatar } = require('../utils/upload')
-const loginValidation = require('../middleware/admin/login-validation')
+const { loginValidation, emailValidation } = require('../middleware/admin/auth-validation')
+const sendEmail = require('../utils/send-email')
 
 const router = new express.Router();
 
@@ -34,6 +36,37 @@ router.post('/users/login', loginValidation, async (req, res) => {
 		return res.json({
 			user,
 			token
+		})
+	} catch (err) {
+		return parseErrorMessage(res, err)
+	}
+})
+
+router.post('/users/forgot-password', emailValidation, async (req, res) => {
+	try {
+		let forgotPasswordToken = crypto.randomBytes(36).toString('hex')
+		const user = await User.findOneAndUpdate({
+			email: req.body.email
+		}, {
+			forgotPassword: forgotPasswordToken
+		})
+
+		if (!user) {
+			return res.status(422).json({
+				"error": {
+					"email": "Email not found!"
+				}
+			})
+		}
+
+		sendEmail(user, {
+			name: user.name,
+			resetPasswordLink: `${res.app.locals.baseUrl}/reset-password/${forgotPasswordToken}`
+		})
+
+		return res.json({
+			user,
+			forgotPasswordToken
 		})
 	} catch (err) {
 		return parseErrorMessage(res, err)

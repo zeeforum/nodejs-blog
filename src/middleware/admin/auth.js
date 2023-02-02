@@ -2,10 +2,24 @@ const jwt = require('jsonwebtoken')
 const User = require('../../models/user')
 
 const sendUnauthorized = (req, res) => {
-	return res.redirect(req.app.locals.adminUrl + '/login')
+	return res.clearCookie("token").redirect(req.app.locals.adminUrl + '/login')
+}
+
+const guestMiddleware = (req, res, next) => {
+	try {
+		let { token } = req.cookies
+		if (!token) {
+			return next()
+		}
+
+		return res.redirect(req.app.locals.adminUrl + '/dashboard')
+	} catch (e) {
+		next()
+	}
 }
 
 const authMiddleware = async (req, res, next) => {
+	console.log('Auth')
 	try {
 		let { token } = req.cookies
 
@@ -29,4 +43,7 @@ const authMiddleware = async (req, res, next) => {
 	}
 }
 
-module.exports = authMiddleware
+module.exports = {
+	authMiddleware,
+	guestMiddleware
+}

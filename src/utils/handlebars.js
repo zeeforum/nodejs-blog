@@ -6,4 +6,12 @@ hbs.registerHelper('showError', (err, fieldName) => {
 	}
 })
 
+hbs.registerHelper('flashMessage', (flash) => {
+	if (flash && flash["success"]) {
+		return `<div class="text-success">${flash["success"]}</div>`
+	} else if (flash && flash["error"]) {
+		return `<div class="text-danger">${flash["error"]}</div>`
+	}
+})
+
 module.exports = hbs

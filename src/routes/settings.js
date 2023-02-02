@@ -1,8 +1,8 @@
 const express = require('express')
 const Setting = require('../models/setting');
-const { parseErrorMessage } = require('../utils/helper');
+const { parseErrorMessage } = require('../utils/helper')
 
-const router = new express.Router();
+const router = new express.Router()
 
 router.get('/settings', async (req, res) => {
 	try {

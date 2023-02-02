@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
 	profile_picture: {
 		type: "String"
 	},
+	forgotPassword: {
+		type: "String",
+		default: null,
+	},
 	tokens: [
 		{
 			token: {
@@ -77,6 +81,7 @@ userSchema.methods.toJSON = function () {
 	user = user.toObject()
 	
 	delete user.password
+	delete user.forgotPassword
 	delete user.tokens
 
 	return user

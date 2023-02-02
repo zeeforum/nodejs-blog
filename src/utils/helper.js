@@ -32,8 +32,34 @@ const makeErrorCookies = (res, err, redirectUrl) => {
 	return res.redirect(redirectUrl)
 }
 
+const setSuccess = (req, msg) => {
+	req.flash("info_success", msg)
+}
+
+const setError = (req, msg) => {
+	req.flash("info_error", msg)
+}
+
+const getSuccess = (req) => {
+	let success = req.flash("info_success")
+	if (success && success[0]) {
+		return success[0]
+	}
+}
+
+const getError = (req) => {
+	let error = req.flash("info_error")
+	if (error && error[0]) {
+		return success[0]
+	}
+}
+
 module.exports = {
 	getValidationMessages,
 	parseErrorMessage,
-	makeErrorCookies
+	makeErrorCookies,
+	setSuccess,
+	getSuccess,
+	setError,
+	getError
 }
